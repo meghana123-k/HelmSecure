@@ -8,7 +8,7 @@ class HelmetDetector:
 
     def detect(self, frame):
 
-        results = self.model(frame, conf=0.5)
+        results = self.model(frame, conf=0.5, verbose=False)
 
         detections = []
 

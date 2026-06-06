@@ -1,4 +1,5 @@
 import cv2
+from datetime import datetime
 
 
 def draw_detections(frame, detections):
@@ -9,15 +10,13 @@ def draw_detections(frame, detections):
         confidence = detection["confidence"]
         label = detection["class_name"]
 
-        status = "SAFE"
-
         if "without" in label.lower():
             status = "VIOLATION"
-            color = (0, 0, 255)  # Red
+            color = (0, 0, 255)
         else:
-            color = (0, 255, 0)  # Green
+            status = "SAFE"
+            color = (0, 255, 0)
 
-        # Bounding box
         cv2.rectangle(
             frame,
             (x1, y1),
@@ -26,7 +25,6 @@ def draw_detections(frame, detections):
             2
         )
 
-        # Status text
         cv2.putText(
             frame,
             status,
@@ -37,7 +35,6 @@ def draw_detections(frame, detections):
             2
         )
 
-        # Class + confidence
         cv2.putText(
             frame,
             f"{label} {confidence:.2f}",
@@ -49,10 +46,9 @@ def draw_detections(frame, detections):
         )
 
     return frame
-def draw_violation_count(
-    frame,
-    count
-):
+
+
+def draw_violation_count(frame, count):
 
     cv2.putText(
         frame,
@@ -61,6 +57,48 @@ def draw_violation_count(
         cv2.FONT_HERSHEY_SIMPLEX,
         1,
         (0, 0, 255),
+        2
+    )
+
+    return frame
+
+
+def draw_alert_banner(frame):
+
+    cv2.rectangle(
+        frame,
+        (0, 0),
+        (frame.shape[1], 60),
+        (0, 0, 255),
+        -1
+    )
+
+    cv2.putText(
+        frame,
+        "VIOLATION DETECTED",
+        (20, 40),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (255, 255, 255),
+        2
+    )
+
+    return frame
+
+
+def draw_timestamp(frame):
+
+    timestamp = datetime.now().strftime(
+        "%Y-%m-%d %H:%M:%S"
+    )
+
+    cv2.putText(
+        frame,
+        timestamp,
+        (20, frame.shape[0] - 20),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        0.6,
+        (255, 255, 255),
         2
     )
 

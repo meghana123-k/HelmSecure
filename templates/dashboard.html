@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HelmSecure Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: #f4f7fc;
+        color: #333;
+      }
+
+      .navbar {
+        background: #0f172a;
+        color: white;
+        padding: 20px 40px;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .container {
+        padding: 30px;
+      }
+
+      .cards {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        flex: 1;
+        min-width: 250px;
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card h3 {
+        color: #64748b;
+        margin-bottom: 10px;
+      }
+
+      .card h1 {
+        font-size: 40px;
+      }
+
+      .card h5 {
+        font-size: 18px;
+        color: #1e293b;
+      }
+
+      .danger {
+        border-left: 6px solid #ef4444;
+      }
+
+      .warning {
+        border-left: 6px solid #f59e0b;
+      }
+
+      .success {
+        border-left: 6px solid #22c55e;
+      }
+
+      .section-title {
+        margin: 25px 0 15px;
+        font-size: 24px;
+      }
+      .monitor-controls {
+        margin-top: 15px;
+
+        text-align: center;
+      }
+      .start-btn {
+        background: #22c55e;
+
+        color: white;
+
+        border: none;
+
+        padding: 12px 25px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        font-size: 16px;
+
+        font-weight: bold;
+
+        margin-right: 10px;
+
+        transition: 0.3s;
+      }
+
+      .start-btn:hover {
+        background: #16a34a;
+      }
+      .stop-btn {
+        background: #ef4444;
+
+        color: white;
+
+        border: none;
+
+        padding: 12px 25px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        font-size: 16px;
+
+        font-weight: bold;
+
+        transition: 0.3s;
+      }
+
+      .stop-btn:hover {
+        background: #dc2626;
+      }
+      .violations-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .violations-table th {
+        background: #0f172a;
+        color: white;
+        padding: 15px;
+        text-align: left;
+      }
+
+      .violations-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .violations-table tr:hover {
+        background: #f8fafc;
+      }
+
+      .chart-container {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+      .live-feed {
+        background: white;
+
+        padding: 20px;
+
+        border-radius: 15px;
+
+        margin-bottom: 30px;
+
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .live-feed img {
+        width: 100%;
+
+        border-radius: 12px;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+      }
+
+      .image-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: 0.3s;
+      }
+
+      .image-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .image-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        cursor: pointer;
+      }
+
+      .image-info {
+        padding: 15px;
+        color: #475569;
+        font-size: 14px;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px;
+        color: gray;
+        margin-top: 30px;
+      }
+
+      /* Modal */
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+      }
+
+      .modal-content {
+        display: block;
+        margin: auto;
+        margin-top: 40px;
+        max-width: 90%;
+        max-height: 90%;
+      }
+
+      .close {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        color: white;
+        font-size: 45px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .card h1 {
+          font-size: 28px;
+        }
+
+        .navbar {
+          font-size: 20px;
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Image Modal -->
+
+    <div id="imageModal" class="modal">
+      <span class="close" onclick="closeModal()"> &times; </span>
+
+      <img class="modal-content" id="modalImage" />
+    </div>
+
+    <!-- Navbar -->
+
+    <div class="navbar">🪖 HelmSecure Dashboard</div>
+
+    <div class="container">
+      <!-- Cards -->
+
+      <div class="cards">
+        <div class="card danger">
+          <h3>Total Violations</h3>
+          <h1>{{ total_violations }}</h1>
+        </div>
+
+        <div class="card warning">
+          <h3>Today's Violations</h3>
+          <h1>{{ today_violations }}</h1>
+        </div>
+
+        <div class="card success">
+          <h3>Latest Violation</h3>
+          <h5>{{ latest_violation }}</h5>
+        </div>
+
+        <div
+          class="card {% if system_status == 'LIVE' %}success{% else %}danger{% endif %}"
+        >
+          <h3>System Status</h3>
+          <h1>{{ system_status }}</h1>
+        </div>
+      </div>
+
+      <!-- Table -->
+
+      <h2 class="section-title">📋 Recent Violations</h2>
+
+      <table class="violations-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Violation Type</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for violation in recent_violations %}
+
+          <tr>
+            <td>{{ violation.Timestamp }}</td>
+            <td>{{ violation.Violation_Type }}</td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Chart -->
+
+      <h2 class="section-title">📊 Violation Analytics</h2>
+
+      <div class="chart-container">
+        <canvas id="violationChart"></canvas>
+      </div>
+      <h2 class="section-title">🎥 Live Monitoring Feed</h2>
+
+      <div class="live-feed">
+        <img src="{{ url_for('video_feed') }}" alt="Live Feed" />
+
+        <div class="monitor-controls">
+          {% if system_status == "LIVE" %}
+
+          <button class="stop-btn" onclick="stopMonitoring()">
+            Stop Monitoring
+          </button>
+
+          {% else %}
+
+          <h3 style="color: red">Monitoring Disabled</h3>
+
+          {% endif %}
+        </div>
+      </div>
+      <!-- Gallery -->
+
+      <h2 class="section-title">📸 Violation Evidence Gallery</h2>
+
+      <div class="gallery">
+        {% for image in screenshots %}
+
+        <div class="image-card">
+          <img
+            src="{{ url_for('static', filename='screenshots/' + image) }}"
+            alt="Violation Screenshot"
+            onclick="openModal(this.src)"
+          />
+
+          <div class="image-info">📸 {{ image }}</div>
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="footer">
+      HelmSecure © 2026 | Real-Time Helmet Safety Monitoring System
+    </div>
+
+    <script>
+
+            function openModal(src) {
+
+                document.getElementById(
+                    "imageModal"
+                ).style.display = "block";
+
+                document.getElementById(
+                    "modalImage"
+                ).src = src;
+            }
+
+            function closeModal() {
+
+                document.getElementById(
+                    "imageModal"
+                ).style.display = "none";
+            }
+
+            const labels =
+                {{ chart_labels | safe }};
+
+            const counts =
+                {{ chart_counts | safe }};
+
+            new Chart(
+                document.getElementById(
+                    "violationChart"
+                ),
+                {
+                    type: "bar",
+
+                    data: {
+
+                        labels: labels,
+
+                        datasets: [
+
+                            {
+                                label: "Violations",
+
+                                data: counts,
+
+                                backgroundColor:
+                                    "#ef4444",
+
+                                borderRadius: 8
+                            }
+
+                        ]
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        plugins: {
+
+                            legend: {
+
+                                display: true
+                            }
+                        }
+                    }
+                }
+            );
+          function stopMonitoring() {
+
+          const password =
+              prompt(
+                  "Enter Admin Password"
+              );
+
+          if (!password) {
+              return;
+          }
+
+          fetch(
+              "/stop_monitoring",
+              {
+                  method: "POST",
+
+                  headers: {
+                      "Content-Type":
+                      "application/x-www-form-urlencoded"
+                  },
+
+                  body:
+                      "password=" +
+                      encodeURIComponent(
+                          password
+                      )
+              }
+          )
+          .then(response => response.json())
+          .then(data => {
+
+              alert(
+                  data.message
+              );
+
+              if (
+                  data.success
+              ) {
+
+                  location.reload();
+              }
+          })
+          .catch(error => {
+
+              console.error(
+                  error
+              );
+
+              alert(
+                  "Failed to stop monitoring"
+              );
+          });
+      }
+    </script>
+  </body>
+</html>
