@@ -49,3 +49,19 @@ def draw_detections(frame, detections):
         )
 
     return frame
+def draw_violation_count(
+    frame,
+    count
+):
+
+    cv2.putText(
+        frame,
+        f"Violations: {count}",
+        (20, 40),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (0, 0, 255),
+        2
+    )
+
+    return frame

@@ -1,13 +1,14 @@
 import cv2
 
 from detection.helmet_detector import HelmetDetector
-from utils.drawing_utils import draw_detections
+from utils.drawing_utils import draw_detections, draw_violation_count
+from detection.violation_manager import ViolationManager
 
 
 def main():
 
     detector = HelmetDetector()
-
+    violation_manager = ViolationManager()
     cap = cv2.VideoCapture(0)
 
     while True:
@@ -23,7 +24,14 @@ def main():
             frame,
             detections
         )
-
+        count = violation_manager.process(
+            frame,
+            detections
+        )
+        frame = draw_violation_count(
+            frame,
+            count
+        )
         cv2.imshow(
             "Helmet Safety Monitoring",
             frame
