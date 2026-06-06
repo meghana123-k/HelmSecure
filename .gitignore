@@ -37,9 +37,7 @@ logs/
 
 # Dataset files
 
-data/images/
-data/videos/
-data/labels/
+data/
 
 # Output files
 

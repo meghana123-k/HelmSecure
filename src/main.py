@@ -1,12 +1,12 @@
 import cv2
 
-from detection.person_detector import PersonDetector
-from utils.drawing_utils import draw_person_boxes
+from detection.helmet_detector import HelmetDetector
+from utils.drawing_utils import draw_detections
 
 
 def main():
 
-    detector = PersonDetector()
+    detector = HelmetDetector()
 
     cap = cv2.VideoCapture(0)
 
@@ -19,7 +19,7 @@ def main():
 
         detections = detector.detect(frame)
 
-        frame = draw_person_boxes(
+        frame = draw_detections(
             frame,
             detections
         )
@@ -33,6 +33,7 @@ def main():
             break
 
     cap.release()
+
     cv2.destroyAllWindows()
 
 
