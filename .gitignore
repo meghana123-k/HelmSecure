@@ -1,0 +1,64 @@
+# Python cache files
+
+**pycache**/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+
+venv/
+env/
+.venv/
+
+# IDE files
+
+.vscode/
+.idea/
+
+# Jupyter notebooks checkpoints
+
+.ipynb_checkpoints/
+
+# Environment variables & secrets
+
+.env
+
+# Logs
+
+*.log
+logs/
+
+# Model files (usually large)
+
+*.pt
+*.pth
+*.h5
+*.ckpt
+
+# Dataset files
+
+data/images/
+data/videos/
+data/labels/
+
+# Output files
+
+outputs/
+runs/
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# Build files
+
+build/
+dist/
+*.egg-info/
+
+# Testing & coverage
+
+.pytest_cache/
+.coverage
+htmlcov/
