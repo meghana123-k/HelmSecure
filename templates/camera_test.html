@@ -26,14 +26,40 @@
         font-size: 18px;
         font-weight: bold;
       }
+      .video-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      #video {
+        width: 800px;
+        max-width: 95%;
+        border: 3px solid black;
+        border-radius: 10px;
+      }
+
+      #overlay {
+        position: absolute;
+        left: 0;
+        top: 0;
+        pointer-events: none;
+      }
     </style>
   </head>
 
   <body>
     <h1>🪖 HelmSecure Browser Camera Test</h1>
 
-    <video id="video" autoplay playsinline></video>
+    <div class="video-container">
+      <video id="video" autoplay playsinline></video>
 
+      <canvas id="overlay"></canvas>
+    </div>
+    <button onclick="captureFrame()">Capture Frame</button>
+
+    <pre id="result"></pre>
+
+    <canvas id="canvas" style="display: none"> </canvas>
     <div class="status" id="status">Requesting Camera Access...</div>
 
     <script>
@@ -48,6 +74,14 @@
           });
 
           video.srcObject = stream;
+          video.onloadedmetadata = () => {
+            const overlay = document.getElementById("overlay");
+
+            overlay.width = video.clientWidth;
+
+            overlay.height = video.clientHeight;
+            console.log(video.clientWidth, video.clientHeight);
+          };
 
           status.innerHTML = "✅ Camera Connected";
         } catch (error) {
@@ -56,7 +90,88 @@
           status.innerHTML = "❌ Camera Access Denied";
         }
       }
+      async function captureFrame() {
+        const canvas = document.getElementById("canvas");
 
+        canvas.width = video.videoWidth;
+
+        canvas.height = video.videoHeight;
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.drawImage(video, 0, 0);
+
+        canvas.toBlob(async function (blob) {
+          const formData = new FormData();
+
+          formData.append("frame", blob, "frame.jpg");
+
+          const response = await fetch("/detect", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+          drawDetections(data.detections);
+          document.getElementById("result").innerHTML = JSON.stringify(
+            data.detections,
+            null,
+            2,
+          );
+        }, "image/jpeg");
+      }
+      function drawDetections(detections) {
+        console.log(detections);
+        const overlay = document.getElementById("overlay");
+
+        const ctx = overlay.getContext("2d");
+
+        ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+        detections.forEach((detection) => {
+          const scaleX = overlay.width / video.videoWidth;
+
+          const scaleY = overlay.height / video.videoHeight;
+
+          const [x1, y1, x2, y2] = detection.bbox;
+
+          const sx1 = x1 * scaleX;
+          const sy1 = y1 * scaleY;
+
+          const sx2 = x2 * scaleX;
+          const sy2 = y2 * scaleY;
+
+          const label = detection.class_name;
+
+          const confidence = detection.confidence;
+
+          let color = "green";
+
+          if (label.toLowerCase().includes("without")) {
+            color = "red";
+          }
+
+          ctx.strokeStyle = color;
+
+          ctx.lineWidth = 3;
+
+          ctx.strokeRect(sx1, sy1, sx2 - sx1, sy2 - sy1);
+
+          ctx.fillStyle = color;
+
+          ctx.font = "18px Arial";
+
+          ctx.fillText(
+            `${label}
+                 ${confidence.toFixed(2)}`,
+            sx1,
+            sy1 - 10,
+          );
+        });
+        console.log("Overlay:", overlay.width, overlay.height);
+        console.log("Video:", video.videoWidth, video.videoHeight);
+        console.log("Detections:", detections);
+      }
       startCamera();
     </script>
   </body>

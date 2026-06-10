@@ -4,13 +4,13 @@ import os
 import shutil
 from datetime import datetime
 import json
-# import cv2
-# import numpy as np
+import cv2
+import numpy as np
 # import time
 # from ultralytics import YOLO
 app = Flask(__name__)
 
-# from src.detection.helmet_detector import HelmetDetector
+from src.detection.helmet_detector import HelmetDetector
 # from src.detection.violation_manager import ViolationManager
 
 # from src.utils.drawing_utils import (
@@ -20,7 +20,7 @@ app = Flask(__name__)
 #     draw_timestamp
 # )
 
-# detector = HelmetDetector()
+detector = HelmetDetector()
 # violation_manager = ViolationManager()
 
 # camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -304,5 +304,34 @@ def camera_test():
     return render_template(
         "camera_test.html"
     )
+    
+@app.route("/detect", methods=["POST"])
+def detect():
+
+    image = request.files.get("frame")
+
+    if image is None:
+
+        return jsonify({
+            "success": False,
+            "message": "No image received"
+        })
+
+    file_bytes = np.frombuffer(
+        image.read(),
+        np.uint8
+    )
+
+    frame = cv2.imdecode(
+        file_bytes,
+        cv2.IMREAD_COLOR
+    )
+
+    detections = detector.detect(frame)
+
+    return jsonify({
+        "success": True,
+        "detections": detections
+    })
 if __name__ == "__main__":
     app.run(debug=False, threaded=True)

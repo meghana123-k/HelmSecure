@@ -7,6 +7,7 @@ class HelmetDetector:
         self.model = YOLO("models/helmet_detector.pt")
 
     def detect(self, frame):
+        print(self.model.names)
 
         results = self.model(frame, conf=0.5, verbose=False)
 
@@ -28,7 +29,7 @@ class HelmetDetector:
                 class_name = self.model.names[class_id]
 
                 detections.append({
-                    "bbox": (x1, y1, x2, y2),
+                    "bbox": [x1, y1, x2, y2],
                     "confidence": confidence,
                     "class_name": class_name
                 })
