@@ -7,7 +7,6 @@ import Analytics from './pages/Analytics';
 function App() {
   return (
     <>
-      <h1>Real time Helmet Detection Dashboard</h1>
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/live-monitoring" element={<LiveMonitoring />} />
