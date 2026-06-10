@@ -1,3 +1,4 @@
+# src/detection/person_detector.py
 from ultralytics import YOLO
 
 

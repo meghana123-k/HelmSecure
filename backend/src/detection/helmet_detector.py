@@ -1,3 +1,4 @@
+# src/detection/helmet_detector.py
 from ultralytics import YOLO
 
 

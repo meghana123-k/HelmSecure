@@ -1,3 +1,5 @@
+# src/detection/violation_manager.py
+
 import os
 import cv2
 from datetime import datetime

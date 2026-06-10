@@ -1,9 +1,11 @@
+# src/main.py
+
 import cv2
 import time
 
-from detection.helmet_detector import HelmetDetector
-from utils.drawing_utils import draw_detections, draw_violation_count, draw_alert_banner, draw_timestamp
-from detection.violation_manager import ViolationManager
+from backend.src.detection.helmet_detector import HelmetDetector
+from backend.src.utils.drawing_utils import draw_detections, draw_violation_count, draw_alert_banner, draw_timestamp
+from backend.src.detection.violation_manager import ViolationManager
 
 def main():
 
