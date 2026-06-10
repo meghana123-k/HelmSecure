@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Camera Test</title>
+
+    <style>
+      body {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin-top: 30px;
+      }
+
+      video {
+        width: 800px;
+        max-width: 95%;
+        border: 3px solid black;
+        border-radius: 10px;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+
+      .status {
+        margin-top: 15px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>🪖 HelmSecure Browser Camera Test</h1>
+
+    <video id="video" autoplay playsinline></video>
+
+    <div class="status" id="status">Requesting Camera Access...</div>
+
+    <script>
+      const video = document.getElementById("video");
+
+      const status = document.getElementById("status");
+
+      async function startCamera() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+          });
+
+          video.srcObject = stream;
+
+          status.innerHTML = "✅ Camera Connected";
+        } catch (error) {
+          console.error(error);
+
+          status.innerHTML = "❌ Camera Access Denied";
+        }
+      }
+
+      startCamera();
+    </script>
+  </body>
+</html>

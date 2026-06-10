@@ -298,5 +298,11 @@ def stop_monitoring():
         "success": True,
         "message": "Monitoring Stopped"
     })
+    
+@app.route("/camera-test")
+def camera_test():
+    return render_template(
+        "camera_test.html"
+    )
 if __name__ == "__main__":
     app.run(debug=False, threaded=True)
