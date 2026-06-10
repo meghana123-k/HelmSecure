@@ -341,11 +341,15 @@
       <h2 class="section-title">🎥 Live Monitoring Feed</h2>
 
       <div class="live-feed">
-        <img src="{{ url_for('video_feed') }}" alt="Live Feed" />
-
+        <!--
+          <img src="{{ url_for('video_feed') }}" alt="Live Feed" />
+        -->
+        <div class="camera-disabled">Camera Feed Disabled (Cloud Version)</div>
         <div class="monitor-controls">
+          <!-- 
+          
           {% if system_status == "LIVE" %}
-
+          
           <button class="stop-btn" onclick="stopMonitoring()">
             Stop Monitoring
           </button>
@@ -353,6 +357,14 @@
           {% else %}
 
           <h3 style="color: red">Monitoring Disabled</h3>
+
+          {% endif %}
+          -->
+          {% if show_admin_controls %}
+
+          <button class="stop-btn" onclick="stopMonitoring()">
+            Stop Monitoring
+          </button>
 
           {% endif %}
         </div>

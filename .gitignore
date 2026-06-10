@@ -41,9 +41,7 @@ data/
 
 # Output files
 
-outputs/
 runs/
-static/
 # OS files
 
 .DS_Store

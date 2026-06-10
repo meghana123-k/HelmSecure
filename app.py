@@ -4,33 +4,34 @@ import os
 import shutil
 from datetime import datetime
 import json
-import cv2
-import numpy as np
-import time
-from ultralytics import YOLO
+# import cv2
+# import numpy as np
+# import time
+# from ultralytics import YOLO
 app = Flask(__name__)
 
-from src.detection.helmet_detector import HelmetDetector
-from src.detection.violation_manager import ViolationManager
+# from src.detection.helmet_detector import HelmetDetector
+# from src.detection.violation_manager import ViolationManager
 
-from src.utils.drawing_utils import (
-    draw_detections,
-    draw_violation_count,
-    draw_alert_banner,
-    draw_timestamp
-)
+# from src.utils.drawing_utils import (
+#     draw_detections,
+#     draw_violation_count,
+#     draw_alert_banner,
+#     draw_timestamp
+# )
 
-detector = HelmetDetector()
-violation_manager = ViolationManager()
+# detector = HelmetDetector()
+# violation_manager = ViolationManager()
 
-camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+# camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+camera = None
 
 monitoring_active = True
 ADMIN_PASSWORD = os.getenv(
     "ADMIN_PASSWORD",
     "helmsecure2026"
 )
-SHOW_ADMIN_CONTROLS = True  
+SHOW_ADMIN_CONTROLS = False  # Set to True to show admin controls on the dashboard  
 
 VIOLATIONS_DIR = "outputs/violations"
 STATIC_SCREENSHOTS_DIR = "static/screenshots"
@@ -164,117 +165,118 @@ def dashboard():
             )
         )
     )
-def generate_frames():
+# def generate_frames():
 
-    global monitoring_active
-    prev_time = time.time()
-    while True:
+#     global monitoring_active
+#     prev_time = time.time()
+#     while True:
 
-        if not monitoring_active:
-            blank = np.zeros(
-                (480, 640, 3),
-                dtype=np.uint8
-            )
+#         if not monitoring_active:
+#             blank = np.zeros(
+#                 (480, 640, 3),
+#                 dtype=np.uint8
+#             )
 
-            cv2.putText(
-                blank,
-                "MONITORING STOPPED",
-                (120, 240),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 0, 255),
-                2
-            )
+#             cv2.putText(
+#                 blank,
+#                 "MONITORING STOPPED",
+#                 (120, 240),
+#                 cv2.FONT_HERSHEY_SIMPLEX,
+#                 1,
+#                 (0, 0, 255),
+#                 2
+#             )
 
-            ret, buffer = cv2.imencode(
-                ".jpg",
-                blank
-            )
+#             ret, buffer = cv2.imencode(
+#                 ".jpg",
+#                 blank
+#             )
 
-            frame_bytes = buffer.tobytes()
+#             frame_bytes = buffer.tobytes()
 
-            yield (
-                b"--frame\r\n"
-                b"Content-Type: image/jpeg\r\n\r\n"
-                + frame_bytes +
-                b"\r\n"
-            )
+#             yield (
+#                 b"--frame\r\n"
+#                 b"Content-Type: image/jpeg\r\n\r\n"
+#                 + frame_bytes +
+#                 b"\r\n"
+#             )
 
-            continue
-        if not camera.isOpened():
-            continue
-        success, frame = camera.read()
+#             continue
+#         if not camera.isOpened():
+#             continue
+#         success, frame = camera.read()
 
-        if not success:
-            break
+#         if not success:
+#             break
 
-        detections = detector.detect(frame)
+#         detections = detector.detect(frame)
 
-        frame = draw_detections(
-            frame,
-            detections
-        )
+#         frame = draw_detections(
+#             frame,
+#             detections
+#         )
 
-        count = violation_manager.process(
-            frame,
-            detections
-        )
+#         count = violation_manager.process(
+#             frame,
+#             detections
+#         )
 
-        frame = draw_violation_count(
-            frame,
-            count
-        )
+#         frame = draw_violation_count(
+#             frame,
+#             count
+#         )
 
-        if violation_manager.has_violation(
-            detections
-        ):
+#         if violation_manager.has_violation(
+#             detections
+#         ):
 
-            frame = draw_alert_banner(
-                frame
-            )
+#             frame = draw_alert_banner(
+#                 frame
+#             )
 
-        frame = draw_timestamp(
-            frame
-        )
-        current_time = time.time()
+#         frame = draw_timestamp(
+#             frame
+#         )
+#         current_time = time.time()
 
-        fps = 1 / (
-            current_time -
-            prev_time
-        )
+#         fps = 1 / (
+#             current_time -
+#             prev_time
+#         )
 
-        prev_time = current_time
+#         prev_time = current_time
 
-        cv2.putText(
-            frame,
-            f"FPS: {int(fps)}",
-            (20, 80),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.8,
-            (255, 255, 255),
-            2
-        )
-        ret, buffer = cv2.imencode(
-            ".jpg",
-            frame
-        )
+#         cv2.putText(
+#             frame,
+#             f"FPS: {int(fps)}",
+#             (20, 80),
+#             cv2.FONT_HERSHEY_SIMPLEX,
+#             0.8,
+#             (255, 255, 255),
+#             2
+#         )
+#         ret, buffer = cv2.imencode(
+#             ".jpg",
+#             frame
+#         )
 
-        frame_bytes = buffer.tobytes()
+#         frame_bytes = buffer.tobytes()
 
-        yield (
-            b"--frame\r\n"
-            b"Content-Type: image/jpeg\r\n\r\n"
-            + frame_bytes +
-            b"\r\n"
-        )
+#         yield (
+#             b"--frame\r\n"
+#             b"Content-Type: image/jpeg\r\n\r\n"
+#             + frame_bytes +
+#             b"\r\n"
+#         )
 @app.route("/video_feed")
 def video_feed():
 
-    return Response(
-        generate_frames(),
-        mimetype=
-        "multipart/x-mixed-replace; boundary=frame"
-    )
+    # return Response(
+    #     generate_frames(),
+    #     mimetype=
+    #     "multipart/x-mixed-replace; boundary=frame"
+    # )
+    return "Camera feed Disabled For Cloud Deployment"
 @app.route("/stop_monitoring", methods=["POST"])
 def stop_monitoring():
 
@@ -290,7 +292,8 @@ def stop_monitoring():
         })
 
     monitoring_active = False
-    camera.release()
+    if camera:
+        camera.release()
     return jsonify({
         "success": True,
         "message": "Monitoring Stopped"
