@@ -25,8 +25,7 @@ env/
 
 # Logs
 
-*.log
-logs/
+
 
 # Model files (usually large)
 
