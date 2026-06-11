@@ -4,7 +4,7 @@ import os
 import cv2
 from datetime import datetime
 from .violation_logger import ViolationLogger
-
+from services.violation_db_service import save_violation
 
 class ViolationManager:
 
@@ -26,7 +26,7 @@ class ViolationManager:
         for detection in detections:
 
             label = detection["class_name"]
-
+            confidence = detection['confidence']
             if "without" in label.lower():
                 violation_label = label
                 break
@@ -61,6 +61,7 @@ class ViolationManager:
                 self.logger.log_violation(
                     violation_label
                 )
+                save_violation(violation_type=violation_label, image_path=filepath.replace("\\", "/"), confidence=confidence)
 
                 self.last_capture_time = current_time
 
