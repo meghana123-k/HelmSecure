@@ -1,5 +1,7 @@
+// src/pages/Dashboard.jsx
+
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import {getDashboardStats} from "../services/dashboardService";
 import { StatCard } from "../components/StatCard";
 import "./Dashboard.css";
 import { TableCard } from "../components/TableCard";
@@ -8,18 +10,18 @@ function Dashboard() {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const stats = await getDashboardStats();
+
+        setStats(stats);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     fetchStats();
   }, []);
-
-  const fetchStats = async () => {
-    try {
-      const response = await api.get("/stats");
-
-      setStats(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   if (!stats) {
     return <h2>Loading...</h2>;

@@ -1,8 +1,15 @@
 # dashboard_routes.py
 
-from flask import Blueprint, jsonify, request
+import os
+import shutil
+
+from flask import Blueprint, app, jsonify, request
 import pandas as pd
 from datetime import datetime
+
+VIOLATIONS_DIR = "outputs/violations"
+STATIC_SCREENSHOTS_DIR = "static/screenshots"
+
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
@@ -30,15 +37,16 @@ def get_stats():
                 "counts": daily_counts["count"].tolist(),
             }
 
-            today = datetime.now().strftime("%Y-%m-%d")
+            today = datetime.now().date()
 
             today_violations = len(
-                df[df["Timestamp"].astype(str).str.startswith(today)]
+                df[df["Date"] == today]
             )
 
             if not df.empty:
+                df["Timestamp"] = pd.to_datetime(df["Timestamp"])
 
-                latest_violation = df.iloc[-1]["Timestamp"]
+                latest_violation = df["Timestamp"].max().strftime("%Y-%m-%d %H:%M:%S")
 
                 recent_violations = df.tail(10).iloc[::-1].to_dict("records")
 
@@ -54,3 +62,37 @@ def get_stats():
             "daily_violations": daily_violations,
         }
     )
+
+@dashboard_bp.route("/api/evidence")
+def get_evidence():
+
+    evidence = []
+
+    os.makedirs(STATIC_SCREENSHOTS_DIR, exist_ok=True)
+
+    if os.path.exists(VIOLATIONS_DIR):
+
+        for image in os.listdir(VIOLATIONS_DIR):
+
+            source = os.path.join(VIOLATIONS_DIR, image)
+
+            destination = os.path.join(STATIC_SCREENSHOTS_DIR, image)
+
+            if not os.path.exists(destination):
+                shutil.copy(source, destination)
+
+            evidence.append(
+                {
+                    "filename": image,
+                    "image_url": f"http://127.0.0.1:5000/static/screenshots/{image}",
+                }
+            )
+
+    evidence.sort(
+        key=lambda x: os.path.getctime(
+            os.path.join(STATIC_SCREENSHOTS_DIR, x["filename"])
+        ),
+        reverse=True,
+    )
+
+    return jsonify(evidence)
