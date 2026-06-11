@@ -1,0 +1,76 @@
+.live-container {
+  padding: 24px;
+  background: #f4f6f8;
+  min-height: 100vh;
+}
+
+.live-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.live-header h1 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.live-status {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: #e8f3ec;
+  color: #166534;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #bbdbc3;
+}
+
+.video-card {
+  background: #ffffff;
+  border: 1px solid #d9dee5;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.video-card img {
+  width: 100%;
+  max-width: 1200px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+  border: 1px solid #d9dee5;
+  background: #000;
+}
+
+.monitoring-info {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.info-card {
+  background: #ffffff;
+  border: 1px solid #d9dee5;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.info-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-card p {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1f2937;
+}
