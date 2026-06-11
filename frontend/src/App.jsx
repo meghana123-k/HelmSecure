@@ -12,8 +12,8 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<MainLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="/live-monitoring" element={<LiveMonitoring />} />
+          <Route index path="/" element={<LiveMonitoring />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/evidence" element={<Evidence />} />
           <Route path="/analytics" element={<Analytics />} />
           {/* <Route path="*" element={<Dashboard />} /> */}

@@ -7,10 +7,10 @@ export function Navbar() {
       <div className="navbar-brand">HelmSecure</div>
 
       <div className="navbar-links">
-        <NavLink to="/">Dashboard</NavLink>
+        <NavLink to="/">Live Monitoring</NavLink>
+        <NavLink to="/dashboard">Dashboard</NavLink>
         <NavLink to="/analytics">Analytics</NavLink>
         <NavLink to="/evidence">Evidence</NavLink>
-        <NavLink to="/live-monitoring">Live Monitoring</NavLink>
       </div>
     </nav>
   );
