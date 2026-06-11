@@ -18,9 +18,9 @@ export function TableCard({ violations }) {
 
         <tbody>
           {violations.length > 0 ? (
-            violations.map((violation) => (
-              <tr key={violation.id}>
-                <td>{violation.id}</td>
+            violations.map((violation, index) => (
+              <tr key={violation.Timestamp || index}>
+                <td>{index + 1}</td>
                 <td>{violation.Timestamp}</td>
                 <td>{violation.Violation_Type}</td>
                 <td>
