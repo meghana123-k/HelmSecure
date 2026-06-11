@@ -1,0 +1,32 @@
+/* src/pages/Analytics.css */
+
+.analytics-container {
+  padding: 24px;
+  background: #f4f6f8;
+  min-height: 100vh;
+}
+
+.chart-card {
+  background: #ffffff;
+  border: 1px solid #d9dee5;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.chart-header {
+  margin-bottom: 20px;
+}
+
+.chart-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.chart-header p {
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 14px;
+}
